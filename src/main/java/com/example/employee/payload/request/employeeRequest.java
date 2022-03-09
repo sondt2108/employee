@@ -1,8 +1,10 @@
-package com.example.employee.payload;
+package com.example.employee.payload.request;
 
-import java.util.Date;
+
 
 import javax.validation.constraints.*;
+
+import com.example.employee.model.Departments;
 
 public class employeeRequest {
     
@@ -22,8 +24,18 @@ public class employeeRequest {
     @Email
     private String email;
 
-    @NotBlank
-    private Date birthDay;
+   
+
+    private Departments departments;
+    
+
+    public Departments getDepartments() {
+        return departments;
+    }
+
+    public void setDepartments(Departments departments) {
+        this.departments = departments;
+    }
 
     public String getFullname() {
         return fullname;
@@ -57,13 +69,9 @@ public class employeeRequest {
         this.email = email;
     }
 
-    public Date getBirthDay() {
-        return birthDay;
-    }
+    
 
-    public void setBirthDay(Date birthDay) {
-        this.birthDay = birthDay;
-    }
+   
 
     
 }
