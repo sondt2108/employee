@@ -1,8 +1,7 @@
 package com.example.employee.security.jwt;
 
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+
 
 import com.example.employee.security.service.UserDetailsImpl;
 
@@ -10,7 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.*;
@@ -40,15 +38,28 @@ public class JwtUtils {
             .compact();
       }
   // Lấy thông tin được lưu trong token
-  public Claims getClaimsFromToken(String token) {
-      // Kiểm tra token có bắt đầu bằng tiền tố
-      if (token == null) return null;
-
-      try {
-          return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody();
-      } catch (ExpiredJwtException e) {
-          return null;
-      }
+  public String getUserNameFromJwtToken(String token) {
+    return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getSubject();
   }
+
+  public boolean validateJwtToken(String authToken) {
+    try {
+      Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(authToken);
+      return true;
+    } catch (SignatureException e) {
+      logger.error("Invalid JWT signature: {}", e.getMessage());
+    } catch (MalformedJwtException e) {
+      logger.error("Invalid JWT token: {}", e.getMessage());
+    } catch (ExpiredJwtException e) {
+      logger.error("JWT token is expired: {}", e.getMessage());
+    } catch (UnsupportedJwtException e) {
+      logger.error("JWT token is unsupported: {}", e.getMessage());
+    } catch (IllegalArgumentException e) {
+      logger.error("JWT claims string is empty: {}", e.getMessage());
+    }
+
+    return false;
+  }
+
 
 }

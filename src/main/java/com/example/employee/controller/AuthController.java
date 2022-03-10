@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
@@ -118,11 +117,6 @@ public class AuthController {
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
             String jwt = jwtUtils.generateJwtToken(authentication);
-            // Add token to cookie to login
-            Cookie cookie = new Cookie("JWT_TOKEN", jwt);
-            cookie.setMaxAge(MAX_AGE_COOKIE);
-            cookie.setPath("/");
-            response.addCookie(cookie);
 
             UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
             List<String> roles = userDetails.getAuthorities().stream()
@@ -135,8 +129,9 @@ public class AuthController {
                     userDetails.getEmail(),
                     roles));
         } catch (Exception e) {
-            return ResponseEntity.ok(new MessageResponse("Username or password incorrect!"));
+            return ResponseEntity.badRequest().body(new MessageResponse("Username or password incorrect!"));
         }
+
 
     }
 

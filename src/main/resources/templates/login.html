@@ -129,6 +129,37 @@ input[type=text]:placeholder {
 }
 
 
+input[type=password] {
+  background-color: #f6f6f6;
+  border: none;
+  color: #0d0d0d;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 5px;
+  width: 85%;
+  border: 2px solid #f6f6f6;
+  -webkit-transition: all 0.5s ease-in-out;
+  -moz-transition: all 0.5s ease-in-out;
+  -ms-transition: all 0.5s ease-in-out;
+  -o-transition: all 0.5s ease-in-out;
+  transition: all 0.5s ease-in-out;
+  -webkit-border-radius: 5px 5px 5px 5px;
+  border-radius: 5px 5px 5px 5px;
+}
+
+input[type=password]:focus {
+  background-color: #fff;
+  border-bottom: 2px solid #5fbae9;
+}
+
+input[type=password]:placeholder {
+  color: #cccccc;
+}
+
+
 
 /* ANIMATIONS */
 
@@ -257,8 +288,8 @@ input[type=text]:placeholder {
       
           <!-- Login Form -->
           <form id="loginForm">
-            <input type="text" name="username" id="login" class="fadeIn second" name="login" placeholder="login">
-            <input type="password" name="password" id="password" class="fadeIn third" name="login" placeholder="password">
+            <input type="text" name="username" id="login" class="fadeIn second"  placeholder="login">
+            <input type="password" name="password" id="password" class="fadeIn third"  placeholder="password">
             <input type="submit" class="fadeIn fourth" id="btnLogin" value="Log In">
           </form>
       
@@ -294,24 +325,22 @@ input[type=text]:placeholder {
 
       console.log(loginData);
 
-    //   $.ajax({
-    //     url: "//signin",
-    //     type: "POST",
-    //     data: JSON.stringify(loginData),
-    //     contentType: "application/json; charset=utf-8",
-    //     dataType: "json",
-    //     success: function (data, textStatus, jqXHR) {
-    //       setJwtToken(data.accessToken);
-    //       setRefreshToken(data.refreshToken);
+      $.ajax({
+        url: "/auth/signin",
+        type: "POST",
+        data: JSON.stringify(loginData),
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function (data, textStatus, jqXHR) {
 
-    //       alert("ok");
+          console.log(jqXHR.responseJSON);
           
           
-    //     },
-    //     error: function (jqXHR, textStatus, errorThrown) {
-    //      alert("error");
-    //     },
-    //   });
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+         alert("error");
+        },
+      });
     },
   });
 });

@@ -4,6 +4,8 @@ import java.util.List;
 
 import com.example.employee.model.Employee;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -13,4 +15,6 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
     
     @Query(value = "select * from employee", nativeQuery = true)
         List<Employee> findAllEmpl();
+
+    Page<Employee> findByFullnameContainingIgnoreCase(String fullname, Pageable pager);
 }

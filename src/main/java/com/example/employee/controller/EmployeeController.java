@@ -4,11 +4,16 @@ import java.util.List;
 import javax.validation.Valid;
 
 import com.example.employee.model.Employee;
+import com.example.employee.model.SearchForm;
 import com.example.employee.payload.request.employeeRequest;
 import com.example.employee.payload.response.MessageResponse;
 import com.example.employee.repository.EmployeeRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,6 +35,27 @@ public class EmployeeController {
         return employeeRepository.findAllEmpl();
     }
 
+    private static final int productMax = 5;
+
+
+    @PostMapping("/employee/search")
+    public Page<Employee> search(
+            // thông tin form tìm kiếm
+            @RequestBody SearchForm sf) {
+
+        Pageable pagination = PageRequest.of(sf.getPage(), productMax,
+                // nếu đúng thì thứ tự tăng đần ngược lại giảm dần
+                sf.getSortOrder() ? Direction.DESC : Direction.ASC,
+                // xếp theo trường nào ví dụ id, name, price
+                sf.getOrderBy());
+
+        // lấy sản phẩm
+        Page<Employee> productPage = employeeRepository.findByFullnameContainingIgnoreCase(sf.getFullname(), pagination);
+
+        return productPage;
+    }
+
+
     @PostMapping(value = "/insertEmpl")
     public ResponseEntity<?> postMethodName(@RequestBody @Valid employeeRequest request) {
 
@@ -45,7 +71,7 @@ public class EmployeeController {
             employeeRepository.save(emp);
             return ResponseEntity.ok(new MessageResponse("success!"));
         } catch (Exception e) {
-            // TODO: handle exception
+            
             return ResponseEntity.ok(new MessageResponse("error!"));
         }
     }
