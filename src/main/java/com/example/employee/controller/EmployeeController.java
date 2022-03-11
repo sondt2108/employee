@@ -22,8 +22,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @RestController
+@RequestMapping("/employee")
 public class EmployeeController {
 
     @Autowired
@@ -35,15 +37,15 @@ public class EmployeeController {
         return employeeRepository.findAllEmpl();
     }
 
-    private static final int productMax = 5;
+    private static final int emplMax = 5;
 
 
-    @PostMapping("/employee/search")
+    @PostMapping("/search")
     public Page<Employee> search(
             // thông tin form tìm kiếm
             @RequestBody SearchForm sf) {
 
-        Pageable pagination = PageRequest.of(sf.getPage(), productMax,
+        Pageable pagination = PageRequest.of(sf.getPage(), emplMax,
                 // nếu đúng thì thứ tự tăng đần ngược lại giảm dần
                 sf.getSortOrder() ? Direction.DESC : Direction.ASC,
                 // xếp theo trường nào ví dụ id, name, price
@@ -72,7 +74,7 @@ public class EmployeeController {
             return ResponseEntity.ok(new MessageResponse("success!"));
         } catch (Exception e) {
             
-            return ResponseEntity.ok(new MessageResponse("error!"));
+            return ResponseEntity.badRequest().body(new MessageResponse("error!"));
         }
     }
 
